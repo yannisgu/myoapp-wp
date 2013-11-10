@@ -155,3 +155,5 @@ $RECYCLE.BIN/
 # Mac desktop service store files
 .DS_Store
 /packages
+/MyOApp.Phone/Lex.Db.dll
+/MyOApp.Phone/MyOApp.Phone_2013_11_04_22_36_45.sap

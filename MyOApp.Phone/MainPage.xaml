@@ -42,19 +42,29 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel Grid.Row="0" Margin="12,17,0,28">
-            <TextBlock Text="MYOAPP" Style="{StaticResource PhoneTextNormalStyle}"/>
-            <TextBlock Text="events" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+            <TextBlock Text="{Binding Path=LocalizedResources.ApplicationTitle, Source={StaticResource LocalizedStrings}}" Style="{StaticResource PhoneTextNormalStyle}"/>
+            <TextBlock Text="{Binding Path=LocalizedResources.MainPageTitle, Source={StaticResource LocalizedStrings}}" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
         </StackPanel>
 
         <!--ContentPanel contains LongListSelector and LongListSelector ItemTemplate. Place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <phone:LongListSelector x:Name="MainLongListSelector" Margin="0,0,-12,0" ItemsSource="{Binding Items}" SelectionChanged="MainLongListSelector_SelectionChanged"  ItemRealized="MainLongListSelector_ItemRealized" >
+            <phone:LongListSelector x:Name="MainLongListSelector" Margin="0,0,-12,0" ItemsSource="{Binding Items}" SelectionChanged="MainLongListSelector_SelectionChanged"  ItemRealized="MainLongListSelector_ItemRealized" Tap="MainLongListSelector_Tap" >
                 <phone:LongListSelector.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Margin="0,0,0,17">
-                            <TextBlock Text="{Binding Name}" TextWrapping="Wrap" Style="{StaticResource PhoneTextLargeStyle}"/>
-                            <TextBlock Text="{Binding  MapDate}" TextWrapping="Wrap" Margin="12,-6,12,0" Style="{StaticResource PhoneTextSubtleStyle}"/>
-                            <TextBlock Text="{Binding  RegionOrganiser}" TextWrapping="Wrap" Margin="12,-6,12,0" Style="{StaticResource PhoneTextSubtleStyle}"/>
+                        <StackPanel Margin="0,0,0,17" Visibility="{Binding IsVisible, Converter={StaticResource BooleanVisibilityConverter}}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <CheckBox Grid.Column="0" Visibility="{Binding EditMode, Converter={StaticResource BooleanVisibilityConverter}}" IsChecked="{Binding Selected,  Mode=TwoWay}" Tap="CheckBox_Tap"  />
+                                <StackPanel Grid.Column="1">
+                                <TextBlock Text="{Binding Name}" TextWrapping="Wrap" Style="{StaticResource PhoneTextLargeStyle}"/>
+                                <TextBlock  Text="{Binding  MapDate}" TextWrapping="Wrap" Margin="12,-6,12,0" Style="{StaticResource PhoneTextSubtleStyle}"/>
+                                <TextBlock Text="{Binding  RegionOrganiser}" TextWrapping="Wrap" Margin="12,-6,12,0" Style="{StaticResource PhoneTextSubtleStyle}"/>
+                                </StackPanel>
+                            </Grid>
+                            
                       </StackPanel>
                     </DataTemplate>
                 </phone:LongListSelector.ItemTemplate>
@@ -68,6 +78,7 @@
 
             Before shipping remove this XAML and the image itself.-->
         <!--<Image Source="/Assets/AlignmentGrid.png" VerticalAlignment="Top" Height="800" Width="480" Margin="0,-32,0,0" Grid.Row="0" Grid.RowSpan="2" IsHitTestVisible="False" />-->
-    </Grid>
 
+      
+    </Grid>
 </phone:PhoneApplicationPage>

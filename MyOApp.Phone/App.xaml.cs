@@ -10,6 +10,8 @@ using MyOApp.Phone.Resources;
 using MyOApp.Library;
 using MyOApp.Library.ViewModels;
 using MyOApp.Library.Models;
+using Microsoft.Phone.Net.NetworkInformation;
+using System.Linq;
 
 namespace MyOApp.Phone
 {
@@ -73,18 +75,26 @@ namespace MyOApp.Phone
         {
             var dataAccess = Platform.DataAccess as DataAccess;
 
-
-            var ev = await (new OeventsLoader()).GetEvents();
-
-            Console.Out.Write(ev.Count);
-
-            await dataAccess.UpdateEvents(ev);
-
-
-            if (App.RootViewModel.Items == null)
+            if (NetworkInterface.NetworkInterfaceType != Microsoft.Phone.Net.NetworkInformation.NetworkInterfaceType.None)
             {
-                await App.RootViewModel.LoadItems();
+                try
+                {
+
+                    long? last =  (new Settings())["lastUpdate"] as long?;
+                    await  (new OeventsLoader()).LoadEvents(last != null ? (long)last : 0);
+                    (new Settings())["lastUpdate"] = Helper.GetTimestamp(DateTime.Now);
+
+                }
+                catch (Exception ex)
+                {
+                    Console.Out.Write(ex.Message);
+                }
             }
+
+            await App.RootViewModel.LoadItems();
+
+
+
         }
 
         // Code to execute when the application is activated (brought to foreground)

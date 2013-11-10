@@ -11,13 +11,8 @@ namespace MyOApp.Library.Models
     {
         public int Id
         {
-            get
-            {
-                return SourceId.GetHashCode();
-            }
-            set
-            {
-            }
+            get;
+            set;
         }
 
        [JsonPropertyAttribute("id")]
@@ -37,9 +32,7 @@ namespace MyOApp.Library.Models
         {
             get
             {
-                long unixTimestamp = date.Ticks - new DateTime(1970, 1, 1).Ticks;
-                unixTimestamp /= TimeSpan.TicksPerMillisecond;
-                return unixTimestamp;
+                return Helper.GetTimestamp(Date);
             }
             set
             {
@@ -80,5 +73,8 @@ namespace MyOApp.Library.Models
 
         public string DistanceType { get; set; }
         public string Discipline { get; set; }
+
+
+        public bool? Selected { get; set; }
     }
 }

@@ -34,7 +34,7 @@ namespace MyOApp.Library.ViewModels
         }
 
         public bool IsLoading { get; private set; }
-        public ObservableCollection<EventItemViewModel> Items { get; private set; }
+        public ObservableCollection<EventItemViewModel> Items { get;  set; }
 
         EventItemViewModel selectedItem;
         public EventItemViewModel SelectedItem
@@ -49,6 +49,7 @@ namespace MyOApp.Library.ViewModels
                 UpdateDetails();
             }
         }
+
 
         async void UpdateDetails()
         {
@@ -74,7 +75,7 @@ namespace MyOApp.Library.ViewModels
             return Platform.DataAccess.GetEvent(id);
         }
 
-        public EventDetailViewModel DetailItem { get; private set; }
+        public EventDetailViewModel DetailItem { get;  set; }
 
         public void EditEvent()
         {
@@ -129,6 +130,30 @@ namespace MyOApp.Library.ViewModels
             else
             {
                 DetailItem.LoadDataModel();
+            }
+        }
+
+        private bool overviewEdit = false;
+
+        public bool OverviewEdit
+        {
+            set
+            {
+                overviewEdit = value;
+
+                if (Items != null)
+                {
+                    foreach (var item in Items)
+                    {
+                        item.EditMode = value;
+                    }
+                }
+
+            }
+
+            get
+            {
+                return overviewEdit;
             }
         }
     }

@@ -6,16 +6,17 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DataContext="{d:DesignData SampleData/MainViewModelSampleData.xaml}"
+    d:DataContext="{d:DesignData SampleData/EventDetailSampleData.xaml}"
     mc:Ignorable="d"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait"  Orientation="Portrait"
-    shell:SystemTray.IsVisible="True">
-
+    shell:SystemTray.IsVisible="True"
+     xmlns:myoapp="clr-namespace:MyOApp.Phone">
+    
     <!--Data context is set to sample data above and first item in sample data collection below and LayoutRoot contains the root grid where all other page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="Transparent" d:DataContext="{Binding Items[0]}">
+    <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -23,52 +24,61 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
-            <TextBlock Text="MYOAPP" Style="{StaticResource PhoneTextNormalStyle}"/>
+            <TextBlock Text="{Binding Path=LocalizedResources.ApplicationTitle, Source={StaticResource LocalizedStrings}}" Style="{StaticResource PhoneTextNormalStyle}"/>
             <TextBlock Text="{Binding Name}" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
         </StackPanel>
 
         <!--ContentPanel contains details text. Place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
             <ListBox SelectionChanged="ListBox_SelectionChanged" x:Name="listBox">
-                <ListBoxItem Tag="Map">
+                <ListBoxItem Tag="Map"  Margin="0,20,0,0" Visibility="{Binding Model.Map, Converter={StaticResource BooleanVisibilityConverter}}">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="110"></ColumnDefinition>
+                            <ColumnDefinition Width="130"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="map"  TextWrapping="Wrap" Style="{StaticResource PhoneTextSmallStyle}" Grid.Column="0" VerticalAlignment="Bottom"/>
+                        <TextBlock Text="{Binding Path=LocalizedResources.MapLabel, Source={StaticResource LocalizedStrings}}"  TextWrapping="Wrap" Style="{StaticResource PhoneTextSmallStyle}" Grid.Column="0" VerticalAlignment="Bottom"/>
                         <TextBlock Text="{Binding Model.Map}" TextWrapping="Wrap" Style="{StaticResource PhoneTextLargeStyle}" Grid.Column="1"/>
                     </Grid>
                 </ListBoxItem>
-                <ListBoxItem>
+                <ListBoxItem Margin="0,20,0,0"  Visibility="{Binding Model.Date, Converter={StaticResource BooleanVisibilityConverter}}">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="110"></ColumnDefinition>
+                            <ColumnDefinition Width="130"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="date"  TextWrapping="Wrap" Style="{StaticResource PhoneTextSmallStyle}" Grid.Column="0" VerticalAlignment="Bottom"/>
+                        <TextBlock Text="{Binding Path=LocalizedResources.DateLabel, Source={StaticResource LocalizedStrings}}"  TextWrapping="Wrap" Style="{StaticResource PhoneTextSmallStyle}" Grid.Column="0" VerticalAlignment="Bottom"/>
                         <TextBlock Text="{Binding Model.Date, StringFormat='{}{0:d}'}" TextWrapping="Wrap" Style="{StaticResource PhoneTextLargeStyle}" Grid.Column="1"/>
                     </Grid>
                 </ListBoxItem>
-                <ListBoxItem>
+                <ListBoxItem Margin="0,20,0,0"  Visibility="{Binding Model.EventCenter, Converter={StaticResource BooleanVisibilityConverter}}">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="110"></ColumnDefinition>
+                            <ColumnDefinition Width="130"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="location"  TextWrapping="Wrap" Style="{StaticResource PhoneTextSmallStyle}" Grid.Column="0" VerticalAlignment="Bottom"/>
+                        <TextBlock Text="{Binding Path=LocalizedResources.LocationLabel, Source={StaticResource LocalizedStrings}}"  TextWrapping="Wrap" Style="{StaticResource PhoneTextSmallStyle}" Grid.Column="0" VerticalAlignment="Bottom"/>
                         <TextBlock Text="{Binding Model.EventCenter}" TextWrapping="Wrap" Style="{StaticResource PhoneTextLargeStyle}" Grid.Column="1"/>
                     </Grid>
                 </ListBoxItem>
-                <ListBoxItem>
+                <ListBoxItem Margin="0,20,0,0" Visibility="{Binding Model.Organiser, Converter={StaticResource BooleanVisibilityConverter}}">
                     <Grid  MinHeight="43">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="110"></ColumnDefinition>
+                            <ColumnDefinition Width="130"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="organsier"  TextWrapping="Wrap" Style="{StaticResource PhoneTextSmallStyle}" Grid.Column="0" VerticalAlignment="Bottom"/>
-                        <TextBlock Text="{Binding Model.Organiser}" TextWrapping="Wrap" Style="{StaticResource PhoneTextNormalStyle}" Grid.Column="1"/>
+                        <TextBlock Text="{Binding Path=LocalizedResources.OrganiserLabel, Source={StaticResource LocalizedStrings}}"  TextWrapping="Wrap" Style="{StaticResource PhoneTextSmallStyle}" Grid.Column="0" VerticalAlignment="Bottom"/>
+                        <TextBlock Text="{Binding Model.Organiser}" TextWrapping="Wrap" Style="{StaticResource PhoneTextLargeStyle}" Grid.Column="1"/>
                     </Grid>
+                </ListBoxItem>
+                <ListBoxItem Tag="Url" Visibility="{Binding Model.Url, Converter={StaticResource BooleanVisibilityConverter}}" BorderThickness="0,10">
+                    <TextBlock Text="Ausschreibung" Style="{StaticResource PhoneTextLargeStyle}" />
+                </ListBoxItem>
+                <ListBoxItem BorderThickness="0,10" Tag="Timetable" >
+                    <TextBlock Text="Anreise" Style="{StaticResource PhoneTextLargeStyle}" />
+                </ListBoxItem>
+                <ListBoxItem BorderThickness="0,10" Tag="Map" Visibility="{Binding Model.Map, Converter={StaticResource BooleanVisibilityConverter}}">
+                    <TextBlock Text="Karten" Style="{StaticResource PhoneTextLargeStyle}" />
                 </ListBoxItem>
             </ListBox>
       

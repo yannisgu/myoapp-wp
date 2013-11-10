@@ -6,8 +6,16 @@ namespace MyOApp.Library.ViewModels
 {
     public class EventItemViewModel : PropertyChangedBase
     {
+        private Event model;
+
+        public EventItemViewModel()
+        {
+
+        }
+
         public EventItemViewModel(Event selectedEvent)
         {
+            model = selectedEvent;
             LoadDataModel(selectedEvent);
         }
 
@@ -19,6 +27,7 @@ namespace MyOApp.Library.ViewModels
             Map= model.Map;
             Organiser = model.Organiser;
             Region = model.Region;
+            Selected = (bool)model.Selected;
         }
 
         public int Id { get; set; }
@@ -32,7 +41,7 @@ namespace MyOApp.Library.ViewModels
                 string value = "";
                 if(!string.IsNullOrEmpty(Map))
                 {
-                    value += Map += ", ";
+                    value += Map + ", ";
                 }
                 value += Date.ToString("d");
                 return value;
@@ -60,5 +69,48 @@ namespace MyOApp.Library.ViewModels
         public string Region { get; set; }
 
         public string Organiser { get; set; }
+
+        private bool selected;
+        public bool Selected
+        {
+            get
+            {
+                return selected;
+            }
+            set
+            {
+                selected = value;
+                if (selected != model.Selected)
+                {
+                    model.Selected = selected;
+                    Platform.DataAccess.UpdateEvent(model);
+                }
+                RaisePropertyChanged("Selected");
+                RaisePropertyChanged("IsVisible");
+            }
+        }
+
+        private bool editMode;
+        public bool EditMode
+        {
+            get
+            {
+                return editMode;
+            }
+            set
+            {
+                editMode = value;
+                RaisePropertyChanged("EditMode");
+                RaisePropertyChanged("IsVisible");
+            }
+        }
+        public bool IsVisible
+        {
+            get
+            {
+                return EditMode || Selected;
+            }
+        }
+
     }
 }

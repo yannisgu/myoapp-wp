@@ -8,6 +8,7 @@ using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using MyOApp.Phone.Resources;
+using Windows.System;
 
 namespace MyOApp.Phone
 {
@@ -29,17 +30,50 @@ namespace MyOApp.Phone
             DataContext = App.RootViewModel.DetailItem;
         }
 
-        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if(listBox.SelectedItem == null)
+            {
+                return;
+            }
             object tag = ((ListBoxItem)listBox.SelectedItem).Tag;
             string action = tag != null ? tag.ToString() : null;
 
-            switch(action)
+            switch (action)
             {
                 case "Map":
+                        NavigationService.Navigate(new Uri("/MapsPage.xaml", UriKind.Relative));
+                    break;
+                case "Url":
+                    var url = App.RootViewModel.DetailItem.Model.Url;
+                    if (!string.IsNullOrEmpty(url) && Uri.IsWellFormedUriString(url, UriKind.Absolute))
+                    {
+                        await Launcher.LaunchUriAsync(new Uri(url));
+
+                    }
+                    break;
+
+                case "Timetable":
+                    var model = App.RootViewModel.DetailItem.Model;
+                    var to = "Bern";
+                   /* if (!string.IsNullOrEmpty(model.EventCenter))
+                    {
+                        to = "to=" + model.EventCenter;
+                    }
+                    else if (model.EventCenterLatitude > 0 && model.EventCenterLongitude > 0)
+                    {
+                        to = "toll=" + model.EventCenterLongitude + ',' + model.EventCenterLatitude;
+
+                    }*/
+                    var date = model.Date.Ticks / TimeSpan.TicksPerSecond;
+                    var timetableUrl = "sbbmobileb2c://timetable?" + to + "&time=" + date + "&accessid=dm89518e7a4e0bcf670";
+                    await Launcher.LaunchUriAsync(new Uri(timetableUrl));
                     break;
             }
+
+            listBox.SelectedItem = null;
         }
+
 
         // Sample code for building a localized ApplicationBar
         //private void BuildLocalizedApplicationBar()

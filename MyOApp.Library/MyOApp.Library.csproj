@@ -33,11 +33,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Helper.cs" />
     <Compile Include="Models\OeventsLoader.cs" />
     <Compile Include="Platform\IDataAccess.cs" />
     <Compile Include="Models\Event.cs" />
     <Compile Include="Platform\Platform.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\MapItemViewModel.cs" />
+    <Compile Include="ViewModels\MapOverviewViewModel.cs" />
     <Compile Include="ViewModels\EventDetailViewModel.cs" />
     <Compile Include="ViewModels\EventItemViewModel.cs" />
     <Compile Include="ViewModels\PropertyChangedBase.cs" />

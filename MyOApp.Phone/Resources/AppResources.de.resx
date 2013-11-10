@@ -122,11 +122,14 @@
     <comment>Controls the FlowDirection for all elements in the RootFrame. Set to the traditional direction of this resource file's language</comment>
   </data>
   <data name="ResourceLanguage" xml:space="preserve">
-    <value>en-US</value>
+    <value>de</value>
     <comment>Controls the Language and ensures that the font for all elements in the RootFrame aligns with the app's language. Set to the language code of this resource file's language.</comment>
   </data>
   <data name="ApplicationTitle" xml:space="preserve">
     <value>MYOAPP</value>
+  </data>
+  <data name="SampleProperty" xml:space="preserve">
+    <value>Sample Runtime Property Value</value>
   </data>
   <data name="AppBarButtonText" xml:space="preserve">
     <value>add</value>
@@ -135,18 +138,18 @@
     <value>Menu Item</value>
   </data>
   <data name="DateLabel" xml:space="preserve">
-    <value>date</value>
+    <value>datum</value>
   </data>
   <data name="LocationLabel" xml:space="preserve">
-    <value>location</value>
+    <value>ort</value>
   </data>
   <data name="MainPageTitle" xml:space="preserve">
     <value>events</value>
   </data>
   <data name="MapLabel" xml:space="preserve">
-    <value>map</value>
+    <value>karte</value>
   </data>
   <data name="OrganiserLabel" xml:space="preserve">
-    <value>organiser</value>
+    <value>organisator</value>
   </data>
 </root>

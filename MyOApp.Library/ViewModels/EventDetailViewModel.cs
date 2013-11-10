@@ -3,64 +3,84 @@ using System.Threading.Tasks;
 
 namespace MyOApp.Library.ViewModels
 {
-  public class EventDetailViewModel : PropertyChangedBase
-  {
-    Event _model;
-    public Event Model { get { return _model; } }
-
-    public EventDetailViewModel(Event Event, bool isNew = false)
+    public class EventDetailViewModel : PropertyChangedBase
     {
-      _model = Event;
-      _isNew = isNew;
+        Event _model;
+        public Event Model
+        {
+            get { return _model; }
+            set { _model = value; }
+        }
 
-      LoadDataModel();
+
+        public EventDetailViewModel()
+        {
+
+        }
+
+        public EventDetailViewModel(Event Event, bool isNew = false)
+        {
+            _model = Event;
+            _isNew = isNew;
+
+            LoadDataModel();
+        }
+
+        bool _isNew;
+        public bool IsNew { get { return _isNew; } }
+
+        public void LoadDataModel()
+        {
+            Name = _model.Name;
+
+            MapViewModel = new MapOverviewViewModel(Model.Map);
+
+            IsDirty = false;
+            IsReadOnly = !_isNew;
+        }
+
+        protected override void RaisePropertyChanged(string property)
+        {
+            base.RaisePropertyChanged(property);
+
+            switch (property)
+            {
+                case "IsDirty":
+                case "IsReadOnly":
+                    return;
+
+                default:
+                    IsDirty = true;
+                    break;
+            }
+        }
+
+        public bool IsDirty { get; set; }
+        public bool IsReadOnly { get; set; }
+
+        public string Name { get; set; }
+
+        public async Task Save()
+        {
+            _model.Name = Name;
+
+            await Platform.DataAccess.UpdateEvent(_model);
+
+            _isNew = false;
+        }
+
+        public async Task Delete()
+        {
+            if (!_isNew)
+                await Platform.DataAccess.DeleteEvent(_model);
+        }
+
+
+
+        public MapOverviewViewModel MapViewModel
+        {
+            get;
+            set;
+        }
     }
-
-    bool _isNew;
-    public bool IsNew { get { return _isNew; } }
-
-    public void LoadDataModel()
-    {
-      Name = _model.Name;
-
-      IsDirty = false;
-      IsReadOnly = !_isNew;
-    }
-
-    protected override void RaisePropertyChanged(string property)
-    {
-      base.RaisePropertyChanged(property);
-
-      switch (property)
-      {
-        case "IsDirty":
-        case "IsReadOnly":
-          return;
-
-        default:
-          IsDirty = true;
-          break;
-      }
-    }
-
-    public bool IsDirty { get; set; }
-    public bool IsReadOnly { get; set; }
-
-    public string Name { get; set; }
-
-    public async Task Save()
-    {
-      _model.Name = Name;
-
-      await Platform.DataAccess.UpdateEvent(_model);
-
-      _isNew = false;
-    }
-
-    public async Task Delete()
-    {
-      if (!_isNew)
-        await Platform.DataAccess.DeleteEvent(_model);
-    }
-  }
 }
