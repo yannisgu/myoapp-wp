@@ -105,7 +105,7 @@ namespace MyOApp.Phone
 
         private void MainLongListSelector_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (App.RootViewModel.OverviewEdit)
+            if (App.RootViewModel.OverviewEdit && MainLongListSelector.SelectedItem != null)
             {
                 ((EventItemViewModel)MainLongListSelector.SelectedItem).Selected = !((EventItemViewModel)MainLongListSelector.SelectedItem).Selected;
                 MainLongListSelector.SelectedItem = null;
