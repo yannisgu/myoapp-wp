@@ -21,7 +21,6 @@ namespace MyOApp.Phone
             db.Map<Event>().Automap(i => i.Id, true).WithIndex("Name", i => i.Name);
 
             db.Initialize();
-
             events = db.Table<Event>();
         }
 

@@ -12,6 +12,7 @@ using MyOApp.Library.ViewModels;
 using MyOApp.Library.Models;
 using Microsoft.Phone.Net.NetworkInformation;
 using System.Linq;
+using System.Threading;
 
 namespace MyOApp.Phone
 {
@@ -75,14 +76,17 @@ namespace MyOApp.Phone
         {
             var dataAccess = Platform.DataAccess as DataAccess;
 
+            var st = Stopwatch.StartNew();
             if (NetworkInterface.NetworkInterfaceType != Microsoft.Phone.Net.NetworkInformation.NetworkInterfaceType.None)
             {
                 try
                 {
-
                     long? last =  (new Settings())["lastUpdate"] as long?;
                     await  (new OeventsLoader()).LoadEvents(last != null ? (long)last : 0);
                     (new Settings())["lastUpdate"] = Helper.GetTimestamp(DateTime.Now);
+                    Console.Out.WriteLine(st.Elapsed);
+                    st.Restart();
+                        
 
                 }
                 catch (Exception ex)
@@ -91,7 +95,10 @@ namespace MyOApp.Phone
                 }
             }
 
+            Console.Out.WriteLine(st.Elapsed);
+            st.Restart();
             await App.RootViewModel.LoadItems();
+            Console.Out.WriteLine(st.Elapsed);
 
 
 
@@ -136,6 +143,7 @@ namespace MyOApp.Phone
                 // An unhandled exception has occurred; break into the debugger
                 Debugger.Break();
             }
+            e.Handled = true;
         }
 
         #region Phone application initialization
