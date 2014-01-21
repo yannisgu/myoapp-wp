@@ -29,11 +29,12 @@ namespace MyOApp.Library.ViewModels
         bool _isNew;
         public bool IsNew { get { return _isNew; } }
 
-        public void LoadDataModel()
+        public async void LoadDataModel()
         {
             Name = _model.Name;
 
             MapViewModel = new MapOverviewViewModel(Model.Map);
+            await MapViewModel.LoadMaps();
 
             IsDirty = false;
             IsReadOnly = !_isNew;

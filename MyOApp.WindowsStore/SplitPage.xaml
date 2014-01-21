@@ -5,18 +5,22 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:MyOApp.WindowsStore"
-    xmlns:data="using:MyOApp.WindowsStore.Data"
+    xmlns:data="using:MyOApp.Library.ViewModels"
     xmlns:common="using:MyOApp.WindowsStore.Common"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
     <Page.Resources>
+        <local:StringFormatConverter x:Key="StringFormatConverter" />
+        <local:VisibilityConverter x:Key="BooleanVisibilityConverter" />
         <!-- Collection of items displayed by this page -->
         <CollectionViewSource
             x:Name="itemsViewSource"
-            Source="{Binding Items}"
-            d:Source="{Binding Groups[0].Items, Source={d:DesignData Source=/DataModel/SampleData.json, Type=data:SampleDataSource}}"/>
+            Source="{Binding Items}"/>
+        <Style x:Key="DetailInfosStyle" x:Name="DetailInfosStyle" TargetType="StackPanel">
+            <Setter Property="Margin" Value="0,0,30,0" />
+        </Style>
     </Page.Resources>
 
     <!--
@@ -24,9 +28,7 @@
         * Row 0 contains the back button and page title
         * Row 1 contains the rest of the page layout
     -->
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-        DataContext="{Binding Group}"
-        d:DataContext="{Binding Groups[0], Source={d:DesignData Source=/DataModel/SampleData.json, Type=data:SampleDataSource}}">
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.ChildrenTransitions>
             <TransitionCollection>
                 <EntranceThemeTransition/>
@@ -54,7 +56,7 @@
                         AutomationProperties.Name="Back"
                         AutomationProperties.AutomationId="BackButton"
                         AutomationProperties.ItemType="Navigation Button"/>
-            <TextBlock x:Name="pageTitle" Text="{Binding Title}" Style="{StaticResource HeaderTextBlockStyle}" Grid.Column="1" 
+            <TextBlock x:Name="pageTitle" Text="{StaticResource AppName}" Style="{StaticResource HeaderTextBlockStyle}" Grid.Column="1" 
                         IsHitTestVisible="false" TextWrapping="NoWrap" VerticalAlignment="Bottom" Margin="0,0,0,40"/>
         </Grid>
 
@@ -68,8 +70,11 @@
             Margin="-10,-10,0,0"
             Padding="120,0,0,60"
             ItemsSource="{Binding Source={StaticResource itemsViewSource}}"
+            d:DataContext="{Binding Items, Source={d:DesignData Source=/DataModel/SampleData.json, Type=data:RootViewModel}}"
+            SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
             IsSwipeEnabled="False"
-            SelectionChanged="ItemListView_SelectionChanged">
+            >
+            <!--SelectionChanged="ItemListView_SelectionChanged"-->
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid Margin="6">
@@ -77,12 +82,10 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Border Background="{ThemeResource ListViewItemPlaceholderBackgroundThemeBrush}" Width="60" Height="60">
-                            <Image Source="{Binding ImagePath}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Title}"/>
-                        </Border>
                         <StackPanel Grid.Column="1" Margin="10,0,0,0">
-                            <TextBlock Text="{Binding Title}" Style="{StaticResource TitleTextBlockStyle}" TextWrapping="NoWrap" MaxHeight="40"/>
-                            <TextBlock Text="{Binding Subtitle}" Style="{StaticResource CaptionTextBlockStyle}" TextWrapping="NoWrap"/>
+                            <TextBlock Text="{Binding Name}" Style="{StaticResource TitleTextBlockStyle}" TextWrapping="NoWrap" MaxHeight="40"/>
+                            <TextBlock Text="{Binding MapDate}" Style="{StaticResource CaptionTextBlockStyle}" TextWrapping="NoWrap"/>
+                            <TextBlock Text="{Binding RegionOrganiser}" Style="{StaticResource CaptionTextBlockStyle}" TextWrapping="NoWrap"/>
                         </StackPanel>
                     </Grid>
                 </DataTemplate>
@@ -101,29 +104,65 @@
             Grid.Column="1"
             Grid.RowSpan="2"
             Padding="60,0,66,0"
-            DataContext="{Binding SelectedItem, ElementName=itemListView}"
-            d:DataContext="{Binding Groups[0].Items[0], Source={d:DesignData Source=/DataModel/SampleData.json, Type=data:SampleDataSource}}"
+            DataContext="{Binding DetailItem}"
+            d:DataContext="{Binding Items[0], Source={d:DesignData Source=/DataModel/SampleData.json, Type=data:RootViewModel}}"
             HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"
             ScrollViewer.HorizontalScrollMode="Disabled" ScrollViewer.VerticalScrollMode="Enabled"
             ScrollViewer.ZoomMode="Disabled">
 
-            <Grid x:Name="itemDetailGrid" Margin="0,60,0,50">
+            <Grid x:Name="itemDetailGrid" Margin="0,75,0,50">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
 
-                <Image Source="{Binding ImagePath}" Grid.Row="1" Margin="0,0,20,0" Width="180" Height="180" Stretch="UniformToFill" AutomationProperties.Name="{Binding Title}"/>
-                <StackPanel x:Name="itemDetailTitlePanel" Grid.Row="1" Grid.Column="1">
-                    <TextBlock x:Name="itemTitle" Margin="0,-10,0,0" Text="{Binding Title}" Style="{StaticResource SubheaderTextBlockStyle}"/>
-                    <TextBlock x:Name="itemSubtitle" Margin="0,0,0,20" Text="{Binding Subtitle}" Style="{StaticResource SubtitleTextBlockStyle}"/>
+                
+                <StackPanel x:Name="itemDetailTitlePanel" Grid.Row="1">
+                    <TextBlock x:Name="itemTitle" Margin="0,0,0,0" Text="{Binding Name}" Style="{StaticResource SubheaderTextBlockStyle}"/>
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollMode="Disabled" HorizontalScrollMode="Auto" VerticalScrollBarVisibility="Hidden">
+                        <StackPanel x:Name="itemDetailItems" Orientation="Horizontal" Margin="0,50,0,30">
+                        <StackPanel Style="{StaticResource DetailInfosStyle}"  x:Name="itemDetailInfoMap">
+                            <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Width="80" HorizontalAlignment="Left">karte</TextBlock>
+                            <TextBlock Style="{StaticResource BodyTextBlockStyle}" IsTextSelectionEnabled="True" Text="{Binding Model.Map}" />
+                        </StackPanel>
+                        <StackPanel  Style="{StaticResource DetailInfosStyle}" x:Name="itemDetailInfoDate">
+                            <TextBlock Style="{StaticResource CaptionTextBlockStyle}"  Width="80" HorizontalAlignment="Left">datum</TextBlock>
+                                <TextBlock Style="{StaticResource BodyTextBlockStyle}" IsTextSelectionEnabled="True"  Text="{Binding Model.Date, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:d}'}"></TextBlock>
+                        </StackPanel>
+                        <StackPanel  Style="{StaticResource DetailInfosStyle}" x:Name="itemDetailInfoLocation">
+                            <TextBlock Style="{StaticResource CaptionTextBlockStyle}"  Width="80" HorizontalAlignment="Left">ort</TextBlock>
+                                <TextBlock Style="{StaticResource BodyTextBlockStyle}" IsTextSelectionEnabled="True"  Text="{Binding Model.EventCenter}"></TextBlock>
+                        </StackPanel>
+                            <StackPanel  Style="{StaticResource DetailInfosStyle}" x:Name="itemDetailInfoOrganiser">
+                                <TextBlock Style="{StaticResource CaptionTextBlockStyle}"  Width="80" HorizontalAlignment="Left">organisator</TextBlock>
+                                <TextBlock Style="{StaticResource BodyTextBlockStyle}" IsTextSelectionEnabled="True"  Text="{Binding Model.Organiser}"></TextBlock>
+                            </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+                    <StackPanel>
+                        <TextBlock x:Name="tbUrl" Text="Ausschreibung" Tag="{Binding Model.Url}" Style="{StaticResource BodyTextBlockStyle}" Visibility="{Binding  Model.Url, Converter={StaticResource BooleanVisibilityConverter}}" Margin="0,5" Tapped="UrlTextBlock_Tapped"   />
+                        <TextBlock x:Name="tbStarlist" Text="Startliste"  Style="{StaticResource BodyTextBlockStyle}" Tag="{Binding Model.UrlStartlist}" Visibility="{Binding  Model.UrlStartlist, Converter={StaticResource BooleanVisibilityConverter}}" Margin="0,5"  Tapped="UrlTextBlock_Tapped"   />
+                        <TextBlock x:Name="tbResults" Text="Rangliste" Tag="{Binding Model.UrlResults}" Style="{StaticResource BodyTextBlockStyle}" Visibility="{Binding  Model.UrlResults, Converter={StaticResource BooleanVisibilityConverter}}" Margin="0,5"  Tapped="UrlTextBlock_Tapped"  />
+                    </StackPanel>
                 </StackPanel>
-                <TextBlock Grid.Row="2" Grid.ColumnSpan="2" Margin="0,20,0,0" Text="{Binding Content}" Style="{StaticResource BodyTextBlockStyle}"/>
+                <StackPanel Grid.Row="2" Margin="0,50,0,0" DataContext="{Binding MapViewModel}">
+                    <ListView x:Name="listVieMaps" ItemsSource="{Binding Maps}" SelectionChanged="listVieMaps_SelectionChanged">
+                        <ListView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapGrid Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ListView.ItemsPanel>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Width="300">
+                                    <TextBlock Text="{Binding Name}" Style="{StaticResource BodyTextBlockStyle}" Margin="0,10,0,10" />
+                                    <Image Source="{Binding ThumbnailUri}" Width="300" Height="100"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </StackPanel>
             </Grid>
         </ScrollViewer>
         <VisualStateManager.VisualStateGroups>
@@ -176,9 +215,24 @@
                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="itemDetail" Storyboard.TargetProperty="Padding">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="120,0,90,0"/>
                         </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="itemDetailInfoMap" Storyboard.TargetProperty="Orientation">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Horizontal" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="itemDetailInfoDate" Storyboard.TargetProperty="Orientation">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Horizontal" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="itemDetailInfoLocation" Storyboard.TargetProperty="Orientation">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Horizontal" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="itemDetailInfoOrganiser" Storyboard.TargetProperty="Orientation">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Horizontal" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="itemDetailItems" Storyboard.TargetProperty="Orientation">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Vertical" />
+                        </ObjectAnimationUsingKeyFrames>
                     </Storyboard>
                 </VisualState>
-            </VisualStateGroup>
+            </VisualStateGroup> 
         </VisualStateManager.VisualStateGroups>
     </Grid>
 </Page>

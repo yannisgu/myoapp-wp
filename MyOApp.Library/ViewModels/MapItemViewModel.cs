@@ -23,6 +23,16 @@ namespace MyOApp.Library.ViewModels
             set;
         }
 
+
+        public Uri ImageUri
+        {
+            get
+            {
+                return new Uri(ImageUrl);
+            }
+            
+        }
+
         [JsonProperty("thumblink")]
         public string ThumbnailId
         {
@@ -39,5 +49,16 @@ namespace MyOApp.Library.ViewModels
                 return string.Format(baseUrl, ThumbnailId);
             }
         }
+
+
+        public Uri ThumbnailUri
+        {
+            get
+            {
+                return new Uri(Thumbnail);
+            }
+
+        }
+
     }
 }

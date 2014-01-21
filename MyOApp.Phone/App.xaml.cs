@@ -76,7 +76,6 @@ namespace MyOApp.Phone
         {
             var dataAccess = Platform.DataAccess as DataAccess;
 
-            var st = Stopwatch.StartNew();
             if (NetworkInterface.NetworkInterfaceType != Microsoft.Phone.Net.NetworkInformation.NetworkInterfaceType.None)
             {
                 try
@@ -84,8 +83,6 @@ namespace MyOApp.Phone
                     long? last =  (new Settings())["lastUpdate"] as long?;
                     await  (new OeventsLoader()).LoadEvents(last != null ? (long)last : 0);
                     (new Settings())["lastUpdate"] = Helper.GetTimestamp(DateTime.Now);
-                    Console.Out.WriteLine(st.Elapsed);
-                    st.Restart();
                         
 
                 }
@@ -95,10 +92,7 @@ namespace MyOApp.Phone
                 }
             }
 
-            Console.Out.WriteLine(st.Elapsed);
-            st.Restart();
             await App.RootViewModel.LoadItems();
-            Console.Out.WriteLine(st.Elapsed);
 
 
 

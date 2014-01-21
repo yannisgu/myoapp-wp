@@ -43,7 +43,7 @@ namespace MyOApp.Library.ViewModels
                 {
                     value += Map + ", ";
                 }
-                value += Date.ToString("d");
+                value += string.Format("{0:d}", Date);
                 return value;
             }
         }

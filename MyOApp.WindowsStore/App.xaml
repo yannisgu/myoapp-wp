@@ -8,6 +8,6 @@
     <Application.Resources>
 
         <!-- Application-specific resources -->
-        <x:String x:Key="AppName">MyOApp.WindowsStore</x:String>
+        <x:String x:Key="AppName">MyOApp</x:String>
     </Application.Resources>
 </Application>

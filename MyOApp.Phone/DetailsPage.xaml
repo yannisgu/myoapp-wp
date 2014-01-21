@@ -80,6 +80,12 @@
                 <ListBoxItem BorderThickness="0,10" Tag="Map" Visibility="{Binding Model.Map, Converter={StaticResource BooleanVisibilityConverter}}">
                     <TextBlock Text="Karten" Style="{StaticResource PhoneTextLargeStyle}" />
                 </ListBoxItem>
+                <ListBoxItem BorderThickness="0,10" Tag="Starlist" Visibility="{Binding Model.UrlStartlist, Converter={StaticResource BooleanVisibilityConverter}}">
+                    <TextBlock Text="Starliste" Style="{StaticResource PhoneTextLargeStyle}" />
+                </ListBoxItem>
+                <ListBoxItem BorderThickness="0,10" Tag="Results" Visibility="{Binding Model.UrlResults, Converter={StaticResource BooleanVisibilityConverter}}">
+                    <TextBlock Text="Rangliste" Style="{StaticResource PhoneTextLargeStyle}" />
+                </ListBoxItem>
             </ListBox>
       
         </Grid>

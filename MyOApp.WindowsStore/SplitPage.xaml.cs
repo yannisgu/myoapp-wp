@@ -1,4 +1,5 @@
-﻿using MyOApp.WindowsStore.Common;
+﻿using MyOApp.Library.ViewModels;
+using MyOApp.WindowsStore.Common;
 using MyOApp.WindowsStore.Data;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Windows.Input;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -27,7 +29,6 @@ namespace MyOApp.WindowsStore
     public sealed partial class SplitPage : Page
     {
         private NavigationHelper navigationHelper;
-        private ObservableDictionary defaultViewModel = new ObservableDictionary();
 
         /// <summary>
         /// NavigationHelper is used on each page to aid in navigation and 
@@ -41,9 +42,9 @@ namespace MyOApp.WindowsStore
         /// <summary>
         /// This can be changed to a strongly typed view model.
         /// </summary>
-        public ObservableDictionary DefaultViewModel
+        public RootViewModel DefaultViewModel
         {
-            get { return this.defaultViewModel; }
+            get { return App.RootViewModel; }
         }
 
         public SplitPage()
@@ -60,10 +61,33 @@ namespace MyOApp.WindowsStore
             this.navigationHelper.GoBackCommand = new RelayCommand(() => this.GoBack(), () => this.CanGoBack());
             this.itemListView.SelectionChanged += ItemListView_SelectionChanged;
 
+            App.RootViewModel.PropertyChanged += RootViewModel_PropertyChanged;
+
             // Start listening for Window size changes 
             // to change from showing two panes to showing a single pane
             Window.Current.SizeChanged += Window_SizeChanged;
             this.InvalidateVisualState();
+        }
+
+        void RootViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "Items")
+            {
+                foreach (var item in App.RootViewModel.Items)
+                {
+                    if (item.Date > DateTime.Now.Subtract(new TimeSpan(1, 0, 0, 0)))
+                    {
+                        if(itemsViewSource.View != null)
+                        {
+                            itemsViewSource.View.MoveCurrentTo(item);
+                            itemListView.ScrollIntoView(item, ScrollIntoViewAlignment.Leading);
+                        }
+
+                        break;
+                    }
+                }
+
+            }
         }
 
         /// <summary>
@@ -79,9 +103,6 @@ namespace MyOApp.WindowsStore
         /// session.  The state will be null the first time a page is visited.</param>
         private async void navigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
-            var group = await SampleDataSource.GetGroupAsync((String)e.NavigationParameter);
-            this.DefaultViewModel["Group"] = group;
-            this.DefaultViewModel["Items"] = group.Items;
 
             if (e.PageState == null)
             {
@@ -98,7 +119,7 @@ namespace MyOApp.WindowsStore
                 // Restore the previously saved state associated with this page
                 if (e.PageState.ContainsKey("SelectedItem") && this.itemsViewSource.View != null)
                 {
-                    var selectedItem = await SampleDataSource.GetItemAsync((String)e.PageState["SelectedItem"]);
+                    var selectedItem  = App.RootViewModel.Items.SingleOrDefault(i => i.Id == (int)e.PageState["SelectedItem"]);
                     this.itemsViewSource.View.MoveCurrentTo(selectedItem);
                 }
             }
@@ -119,8 +140,8 @@ namespace MyOApp.WindowsStore
         {
             if (this.itemsViewSource.View != null)
             {
-                var selectedItem = (Data.SampleDataItem)this.itemsViewSource.View.CurrentItem;
-                if (selectedItem != null) e.PageState["SelectedItem"] = selectedItem.UniqueId;
+                var selectedItem = (EventItemViewModel)this.itemsViewSource.View.CurrentItem;
+                if (selectedItem != null) e.PageState["SelectedItem"] = selectedItem.Id;
             }
         }
 
@@ -162,11 +183,6 @@ namespace MyOApp.WindowsStore
         /// <param name="e">Event data that describes how the selection was changed.</param>
         private void ItemListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // Invalidate the view state when logical page navigation is in effect, as a change
-            // in selection may cause a corresponding change in the current logical page.  When
-            // an item is selected this has the effect of changing from displaying the item list
-            // to showing the selected item's details.  When the selection is cleared this has the
-            // opposite effect.
             if (this.UsingLogicalPageNavigation()) this.InvalidateVisualState();
         }
 
@@ -222,6 +238,15 @@ namespace MyOApp.WindowsStore
             return logicalPageBack ? "SinglePane_Detail" : "SinglePane";
         }
 
+        private void listVieMaps_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var map = (MapItemViewModel)listVieMaps.SelectedItem;
+            if (map != null)
+            {
+                Launcher.LaunchUriAsync(map.ImageUri);
+            }
+        }
+
         #endregion
 
         #region NavigationHelper registration
@@ -246,5 +271,28 @@ namespace MyOApp.WindowsStore
         }
 
         #endregion
+
+        private async void UrlTextBlock_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            var textBlock = sender as TextBlock;
+            if(textBlock != null)
+            {
+                var url = textBlock.Tag as string;
+                if(url != null)
+                {
+                    try
+                    {
+                        await Launcher.LaunchUriAsync(new Uri(url));
+                    }
+                    catch(Exception ex)
+                    {
+
+                    }
+                }
+            }
+        }
+
+        
+
     }
 }

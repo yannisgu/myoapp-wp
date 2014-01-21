@@ -63,6 +63,9 @@ namespace MyOApp.Library.ViewModels
                     var item = await LoadDetails(selectedItem.Id);
                     DetailItem = new EventDetailViewModel(item);
                 }
+                catch 
+                {
+                }
                 finally
                 {
                     IsLoading = false;

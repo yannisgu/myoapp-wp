@@ -24,7 +24,7 @@ namespace MyOApp.Phone
             base.OnNavigatedTo(e);
 
             
-             App.RootViewModel.DetailItem.MapViewModel.LoadMaps();
+            await App.RootViewModel.DetailItem.MapViewModel.LoadMaps();
             DataContext = App.RootViewModel.DetailItem.MapViewModel;
         }
 

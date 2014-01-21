@@ -69,6 +69,12 @@ namespace MyOApp.Phone
                     var timetableUrl = "sbbmobileb2c://timetable?" + to + "&time=" + date + "&accessid=dm89518e7a4e0bcf670";
                     await Launcher.LaunchUriAsync(new Uri(timetableUrl));
                     break;
+                case "Starlist":
+                    await Launcher.LaunchUriAsync(new Uri(App.RootViewModel.DetailItem.Model.UrlStartlist.Replace("kind=all", "")));
+                    break;
+                case "Results":
+                    await Launcher.LaunchUriAsync(new Uri(App.RootViewModel.DetailItem.Model.UrlResults.Replace("kind=all", "")));
+                    break;
             }
 
             listBox.SelectedItem = null;

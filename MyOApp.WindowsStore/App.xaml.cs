@@ -1,14 +1,20 @@
-﻿using MyOApp.WindowsStore.Common;
-
+﻿using MyOApp.Library;
+using MyOApp.Library.Models;
+using MyOApp.Library.ViewModels;
+using MyOApp.WindowsStore.Common;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
+using Windows.UI.ApplicationSettings;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -26,6 +32,14 @@ namespace MyOApp.WindowsStore
     /// </summary>
     sealed partial class App : Application
     {
+
+        public static readonly RootViewModel RootViewModel = new RootViewModel();
+
+        static App()
+        {
+            Platform.DataAccess = new DataAccess();
+        }
+
         /// <summary>
         /// Initializes the singleton Application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -34,6 +48,14 @@ namespace MyOApp.WindowsStore
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+            UnhandledException += App_UnhandledException;
+        }
+
+        async void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            var messageDialog = new Windows.UI.Popups.MessageDialog(e.Exception.Message + " " + e.Exception.StackTrace);
+            await messageDialog.ShowAsync();
+            e.Handled = true;
         }
 
         /// <summary>
@@ -89,10 +111,60 @@ namespace MyOApp.WindowsStore
                 // When the navigation stack isn't restored navigate to the first page,
                 // configuring the new page by passing required information as a navigation
                 // parameter
-                rootFrame.Navigate(typeof(ItemsPage), e.Arguments);
+                rootFrame.Navigate(typeof(SplitPage), e.Arguments);
             }
+
+
+            var dataAccess = Platform.DataAccess as DataAccess;
+
+            if (NetworkInterface.GetIsNetworkAvailable())
+            {
+                try
+                {
+                    var localSettings = ApplicationData.Current.LocalSettings;
+                    long? last = localSettings.Values["lastUpdate"] as long?;
+                    await (new OeventsLoader()).LoadEvents(last != null ? (long)last : 0);
+                    localSettings.Values["lastUpdate"] = Helper.GetTimestamp(DateTime.Now);
+
+
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+            }
+
+            await App.RootViewModel.LoadItems();
+
             // Ensure the current window is active
             Window.Current.Activate();
+
+            SettingsPane settingsPane = SettingsPane.GetForCurrentView();
+
+            settingsPane.CommandsRequested += (s, settingsEvent) =>
+            {
+                SettingsCommand settingsCommand = new SettingsCommand(
+                  "ABOUT_ID",
+                  "Datenschutz",
+                  command =>
+                  {
+                      var flyout = new SettingsFlyout();
+                      flyout.Title = "Datenschutz";
+
+
+                      flyout.Content = new TextBlock()
+                      {
+                          Text = "MyOApp sammelt oder sendet keine persönlichen identifizierbaren Daten. Die Dienste welche MyOApp verwendet speichern oder verwenden keine persönlichen Informationen.",
+                          TextAlignment = Windows.UI.Xaml.TextAlignment.Left,
+                          TextWrapping = Windows.UI.Xaml.TextWrapping.Wrap,
+                          FontSize = 14
+                      };
+
+                      flyout.Show();
+                  }
+                );
+                settingsEvent.Request.ApplicationCommands.Add(settingsCommand);
+            };
         }
 
         /// <summary>

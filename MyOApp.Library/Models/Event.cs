@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -76,5 +77,15 @@ namespace MyOApp.Library.Models
 
 
         public bool? Selected { get; set; }
+
+
+        [DefaultValue("")]
+        [JsonProperty(DefaultValueHandling=DefaultValueHandling.Populate)]
+        public string UrlStartlist { get; set; }
+
+
+        [DefaultValue("")]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+        public string UrlResults { get; set; }
     }
 }
