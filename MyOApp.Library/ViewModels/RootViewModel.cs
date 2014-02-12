@@ -143,12 +143,14 @@ namespace MyOApp.Library.ViewModels
             set
             {
                 overviewEdit = value;
-
-                if (Items != null)
+                lock (Items)
                 {
-                    foreach (var item in Items)
+                    if (Items != null)
                     {
-                        item.EditMode = value;
+                        foreach (var item in Items)
+                        {
+                            item.EditMode = value;
+                        }
                     }
                 }
 
