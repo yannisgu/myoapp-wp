@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using MyOApp.Library.ViewModels;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Collections.ObjectModel;
 
 namespace MyOApp.Library.Models
 {
@@ -29,7 +31,7 @@ namespace MyOApp.Library.Models
             return events.ToList();
         }
 
-        public async Task LoadEvents(long lastModfication)
+        public async Task LoadEvents(long lastModfication, ObservableCollection<EventItemViewModel> viewModels )
         {
             var dataAcces = Platform.DataAccess;
             var oevents = await GetEvents(lastModfication);
@@ -41,13 +43,25 @@ namespace MyOApp.Library.Models
                 {
                     ev.Id = oldEvent.Id;
                     ev.Selected = oldEvent.Selected;
+                    viewModels[viewModels.IndexOf(viewModels.FirstOrDefault(m => m.Id == oldEvent.Id))] = new EventItemViewModel(ev);
+                    await dataAcces.UpdateEvent(ev);
                 }
                 else
                 {
                     ev.Selected = true;
+                    await dataAcces.UpdateEvent(ev);
+                    var previous = viewModels.FirstOrDefault(m => m.Date > ev.Date);
+                    var viewModel = new EventItemViewModel(ev);
+                    if (previous == null)
+                    {
+                        viewModels.Add(viewModel);
+                    }
+                    else
+                    {
+                        viewModels.Insert(viewModels.IndexOf(previous), viewModel);
+                    }
                 }
 
-                await dataAcces.UpdateEvent(ev);
             }
         }
 

@@ -76,13 +76,19 @@ namespace MyOApp.Phone
         {
             var dataAccess = Platform.DataAccess as DataAccess;
 
+            await App.RootViewModel.LoadItems();
+
+
             if (NetworkInterface.NetworkInterfaceType != Microsoft.Phone.Net.NetworkInformation.NetworkInterfaceType.None)
             {
                 try
                 {
                     long? last =  (new Settings())["lastUpdate"] as long?;
-                    await  (new OeventsLoader()).LoadEvents(last != null ? (long)last : 0);
+                    var task = (new OeventsLoader()).LoadEvents(last != null ? (long)last : 0, RootViewModel.Items);
                     (new Settings())["lastUpdate"] = Helper.GetTimestamp(DateTime.Now);
+
+                    
+                   
                         
 
                 }
@@ -92,7 +98,6 @@ namespace MyOApp.Phone
                 }
             }
 
-            await App.RootViewModel.LoadItems();
 
 
 

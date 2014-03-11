@@ -10,6 +10,6 @@ namespace MyOApp.Library
     Task UpdateEvent(Event item);
     Task<bool> DeleteEvent(Event item);
     Task<int> DeleteAllEvents();
-    Task<Event> GetEvent(int id);
+    Task<Event> GetEvent(int eventId);
   }
 }

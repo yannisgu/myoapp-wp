@@ -27,9 +27,23 @@ namespace MyOApp.Phone
 
             DataContext = App.RootViewModel;
             App.RootViewModel.PropertyChanged += RootPropertyChanged;
+            MainLongListSelector.Loaded += MainLongListSelector_Loaded;
 
             // Sample code to localize the ApplicationBar
             BuildApplicationBar();
+        }
+
+        void MainLongListSelector_Loaded(object sender, RoutedEventArgs e)
+        {
+            var items = MainLongListSelector.ItemsSource as IEnumerable<EventItemViewModel>;
+            if (items != null)
+            {
+                var scrollToItem = items.FirstOrDefault(i => i.Date > DateTime.Now.Subtract(new TimeSpan(1, 0, 0, 0)));
+                if (scrollToItem != null)
+                {
+                   MainLongListSelector.ScrollTo(scrollToItem);
+                }
+            }
         }
 
         // Load data for the ViewModel Items
@@ -51,20 +65,6 @@ namespace MyOApp.Phone
                     MainLongListSelector.SelectedItem = null;
                
             }
-            else if ( e.PropertyName == "Items")
-            {
-                    foreach (var item in App.RootViewModel.Items)
-                    {
-                        if (item.Date > DateTime.Now.Subtract(new TimeSpan(1, 0, 0, 0)))
-                        {
-                            Thread.Sleep(1);
-                            MainLongListSelector.ScrollTo(item);
-                            
-                            break;
-                        }
-                    }
-
-            }
         }
 
         // Handle selection changed on LongListSelector
@@ -77,28 +77,11 @@ namespace MyOApp.Phone
                     App.RootViewModel.SelectedItem = (EventItemViewModel)MainLongListSelector.SelectedItem;
                 }
             }
-            else
-            {
-
-            }
-        }
-
-
-        private void MainLongListSelector_ItemRealized(object sender, ItemRealizationEventArgs e)
-        {
         }
 
         private async void ApplicationBarIconButton_Click(object sender, EventArgs e)
         {
-            if(sender == appBarBtnEdit)
-            {
-                App.RootViewModel.OverviewEdit = true;
-
-            }
-            else
-            {
-                App.RootViewModel.OverviewEdit = false;
-            }
+            App.RootViewModel.OverviewEdit = sender == appBarBtnEdit;
             ApplicationBar.Buttons.Clear();
             ApplicationBar.Buttons.Add(App.RootViewModel.OverviewEdit ? appBarBtnConfirm : appBarBtnEdit);
         }

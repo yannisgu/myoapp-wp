@@ -46,9 +46,9 @@ namespace MyOApp.Phone
             return events.DeleteAsync(Event);
         }
 
-        public Task<Event> GetEvent(int EventId)
+        public Task<Event> GetEvent(int eventId)
         {
-            return events.LoadByKeyAsync(EventId);
+            return events.LoadByKeyAsync(eventId);
         }
 
         public Task<int> DeleteAllEvents()
