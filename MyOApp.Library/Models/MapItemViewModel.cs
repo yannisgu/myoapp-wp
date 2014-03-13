@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyOApp.Library.ViewModels
+namespace MyOApp.Library.Models
 {
-    public class MapItemViewModel
+    public class MapItemModel
     {
         [JsonProperty("compname")]
         public string Name

@@ -4,7 +4,7 @@
   <Languages xmlns="">
     <Language code="de" />
   </Languages>
-  <App xmlns="" ProductID="{9d243fb5-bdae-446d-b685-586662b9cd75}" Title="MyOApp" RuntimeType="Silverlight" Version="1.1.2.0" Genre="apps.normal" Author="yannisgu" Description="MyOApp is an App to explore orienteering events in Switzerland." Publisher="yannisgu" PublisherID="{204d88d4-aeeb-4b14-a8ec-4050a3d3007f}">
+  <App xmlns="" ProductID="{9d243fb5-bdae-446d-b685-586662b9cd75}" Title="MyOApp" RuntimeType="Silverlight" Version="1.2.0.0" Genre="apps.normal" Author="yannisgu" Description="MyOApp is an App to explore orienteering events in Switzerland." Publisher="yannisgu" PublisherID="{204d88d4-aeeb-4b14-a8ec-4050a3d3007f}">
     <IconPath IsRelative="true" IsResource="false">Assets\ApplicationIcon.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_NETWORKING" />

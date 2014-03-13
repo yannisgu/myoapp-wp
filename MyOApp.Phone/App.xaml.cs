@@ -4,6 +4,8 @@ using System.Resources;
 using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Navigation;
+using Cirrious.CrossCore;
+using Cirrious.MvvmCross.ViewModels;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using MyOApp.Phone.Resources;
@@ -19,8 +21,7 @@ namespace MyOApp.Phone
     public partial class App : Application
     {
 
-        public static readonly RootViewModel RootViewModel = new RootViewModel();
-
+        
         static App()
         {
             Platform.DataAccess = new DataAccess();
@@ -52,32 +53,35 @@ namespace MyOApp.Phone
             // Show graphics profiling information while debugging.
             if (Debugger.IsAttached)
             {
-                // Display the current frame rate counters.
-               // Application.Current.Host.Settings.EnableFrameRateCounter = true;
-
-                // Show the areas of the app that are being redrawn in each frame.
-                //Application.Current.Host.Settings.EnableRedrawRegions = true;
-
-                // Enable non-production analysis visualization mode,
-                // which shows areas of a page that are handed off GPU with a colored overlay.
-                //Application.Current.Host.Settings.EnableCacheVisualization = true;
-
-                // Prevent the screen from turning off while under the debugger by disabling
-                // the application's idle detection.
-                // Caution:- Use this under debug mode only. Application that disables user idle detection will continue to run
-                // and consume battery power when the user is not using the phone.
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
+
+            var setup = new Setup(RootFrame);
+            setup.Initialize();
         }
+
+        private bool hasDoneFirstNavigation = false;
 
         // Code to execute when the application is launching (eg, from Start)
         // This code will not execute when the application is reactivated
         private async void Application_Launching(object sender, LaunchingEventArgs e)
         {
-            var dataAccess = Platform.DataAccess as DataAccess;
+            RootFrame.Navigating += (navigationSender, navigationArgs) =>
+            {
+                if (hasDoneFirstNavigation)
+                {
+                    return;
+                }
 
-            await App.RootViewModel.LoadItems();
-
+                navigationArgs.Cancel = true;
+                hasDoneFirstNavigation = true;
+                var appStart = Mvx.Resolve<IMvxAppStart>();
+                RootFrame.Dispatcher.BeginInvoke(() => appStart.Start());
+            };
+            
+            
+            //await App.RootViewModel.LoadItems();
+            /*
 
             if (NetworkInterface.NetworkInterfaceType != Microsoft.Phone.Net.NetworkInformation.NetworkInterfaceType.None)
             {
@@ -96,7 +100,7 @@ namespace MyOApp.Phone
                 {
                     Console.Out.Write(ex.Message);
                 }
-            }
+            }*/
 
 
 
@@ -107,8 +111,8 @@ namespace MyOApp.Phone
         // This code will not execute when the application is first launched
         private async void Application_Activated(object sender, ActivatedEventArgs e)
         {
-            if (App.RootViewModel.Items == null)
-                await App.RootViewModel.LoadItems();
+            //if (App.RootViewModel.Items == null)
+              //  await App.RootViewModel.LoadItems();
         }
 
         // Code to execute when the application is deactivated (sent to background)

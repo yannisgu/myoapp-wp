@@ -1,12 +1,16 @@
-﻿using MyOApp.Library.Models;
+﻿using System.Threading.Tasks;
+using Cirrious.MvvmCross.ViewModels;
+using MyOApp.Library.Models;
 using System;
 
 
 namespace MyOApp.Library.ViewModels
 {
-    public class EventItemViewModel : PropertyChangedBase
+
+    [Magic]
+    public class EventItemViewModel : MvxViewModel
     {
-        private Event model;
+        private readonly Event @event;
 
         public EventItemViewModel()
         {
@@ -15,7 +19,7 @@ namespace MyOApp.Library.ViewModels
 
         public EventItemViewModel(Event selectedEvent)
         {
-            model = selectedEvent;
+            @event = selectedEvent;
             LoadDataModel(selectedEvent);
         }
 
@@ -27,7 +31,10 @@ namespace MyOApp.Library.ViewModels
             Map= model.Map;
             Organiser = model.Organiser;
             Region = model.Region;
-            Selected = (bool)model.Selected;
+            if (model.Selected != null)
+            {
+                Selected = (bool)model.Selected;
+            }
         }
 
         public int Id { get; set; }
@@ -80,10 +87,10 @@ namespace MyOApp.Library.ViewModels
             set
             {
                 selected = value;
-                if (selected != model.Selected)
+                if (selected != @event.Selected)
                 {
-                    model.Selected = selected;
-                    Platform.DataAccess.UpdateEvent(model);
+                    @event.Selected = selected;
+                    Platform.DataAccess.UpdateEvent(@event);
                 }
                 RaisePropertyChanged("Selected");
                 RaisePropertyChanged("IsVisible");
@@ -110,6 +117,13 @@ namespace MyOApp.Library.ViewModels
             {
                 return EditMode || Selected;
             }
+        }
+
+
+        public Event Event
+        {
+            get { return @event; }
+            
         }
 
     }

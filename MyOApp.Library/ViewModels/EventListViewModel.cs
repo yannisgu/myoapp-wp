@@ -2,11 +2,15 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using Cirrious.MvvmCross.ViewModels;
+using MyOApp.Library.Helpers;
 using MyOApp.Library.Models;
 
 namespace MyOApp.Library.ViewModels
 {
-    public class RootViewModel : PropertyChangedBase
+    [Magic]
+    public class EventListViewModel : MvxViewModel
     {
         Task<ObservableCollection<EventItemViewModel>> LoadItemsCore()
         {
@@ -34,23 +38,12 @@ namespace MyOApp.Library.ViewModels
         }
 
         public bool IsLoading { get; private set; }
-        public ObservableCollection<EventItemViewModel> Items { get;  set; }
 
-        EventItemViewModel selectedItem;
-        public EventItemViewModel SelectedItem
-        {
-            get
-            {
-                return selectedItem;
-            }
-            set
-            {
-                selectedItem = value;
-                UpdateDetails();
-            }
-        }
+        public ObservableCollection<EventItemViewModel> Items { get; set; }
 
 
+        public EventItemViewModel SelectedItem { get; set; }
+        /*
         async void UpdateDetails()
         {
             if (selectedItem == null)
@@ -71,72 +64,22 @@ namespace MyOApp.Library.ViewModels
                     IsLoading = false;
                 }
             }
-        }
+        }*/
 
-        Task<Event> LoadDetails(int id)
+       /* Task<Event> LoadDetails(int id)
         {
             return Platform.DataAccess.GetEvent(id);
-        }
+        }*/
 
-        public EventDetailViewModel DetailItem { get;  set; }
+        //public EventDetailViewModel DetailItem { get;  set; }
 
-        public void EditEvent()
+        public ICommand DisplayDetailCommand
         {
-            if (DetailItem == null)
-                throw new InvalidOperationException();
-
-            DetailItem.IsReadOnly = false;
+            get { return new MvxCommand(() => ShowViewModel<EventDetailViewModel>(SelectedItem.Event)); }
         }
 
-        public async Task SaveEvent()
-        {
-            var selectedItem = SelectedItem;
-            var detailItem = DetailItem;
-
-            var isNew = detailItem.IsNew;
-            await detailItem.Save();
-
-            if (isNew)
-                Items.Add(SelectedItem = new EventItemViewModel(detailItem.Model));
-            else if (selectedItem != null)
-                selectedItem.LoadDataModel(detailItem.Model);
-        }
-
-        public async Task DeleteEvent()
-        {
-            var detail = DetailItem;
-            if (detail == null)
-                throw new InvalidOperationException();
-
-            var selectedItem = SelectedItem;
-            await detail.Delete();
-
-            if (selectedItem != null)
-                Items.Remove(selectedItem);
-
-            SelectedItem = null;
-            DetailItem = null;
-        }
-
-        public void NewEvent()
-        {
-            SelectedItem = null;
-            DetailItem = new EventDetailViewModel(new Event(), true);
-        }
-
-        public void RevertEvent()
-        {
-            if (DetailItem.IsNew)
-            {
-                DetailItem = null;
-            }
-            else
-            {
-                DetailItem.LoadDataModel();
-            }
-        }
-
-        private bool overviewEdit = false;
+       
+        private bool overviewEdit;
 
         public bool OverviewEdit
         {
@@ -160,6 +103,29 @@ namespace MyOApp.Library.ViewModels
             {
                 return overviewEdit;
             }
+        }
+
+        public async Task Init()
+        {
+
+            await LoadItems();
+
+            //if (NetworkInterface.NetworkInterfaceType != Microsoft.Phone.Net.NetworkInformation.NetworkInterfaceType.None)
+            //{
+            try
+            {
+                var last =  Settings.LastModification;
+                //var task = (new OeventsLoader()).LoadEvents(last != null ? (long)last : 0, RootViewModel.Items);
+                await (new OeventsLoader()).LoadEvents(last, Items);
+                Settings.LastModification = Helper.GetTimestamp(DateTime.Now);
+            }
+            catch (Exception ex)
+            {
+                //Console.Out.Write(ex.Message);
+            }
+            //}
+
+
         }
     }
 }

@@ -107,18 +107,19 @@ namespace MyOApp.Phone
             
 
             // Create a new button and set the text value to the localized string from AppResources.
-            appBarBtnEdit = new ApplicationBarIconButton(new Uri("/Images/edit.png", UriKind.Relative));
-            appBarBtnEdit.Text = "bearbeiten";
+            appBarBtnEdit = new ApplicationBarIconButton(new Uri("/Images/edit.png", UriKind.Relative))
+            {
+                Text = "bearbeiten"
+            };
             appBarBtnEdit.Click += ApplicationBarIconButton_Click;
             ApplicationBar.Buttons.Add(appBarBtnEdit);
 
             // Create a new button and set the text value to the localized string from AppResources.
-            appBarBtnConfirm = new ApplicationBarIconButton(new Uri("/Images/check.png", UriKind.Relative));
-            appBarBtnConfirm.Text = "beenden";
+            appBarBtnConfirm = new ApplicationBarIconButton(new Uri("/Images/check.png", UriKind.Relative))
+            {
+                Text = "beenden"
+            };
             appBarBtnConfirm.Click += ApplicationBarIconButton_Click;
-
-
-
         }
     }
 }
