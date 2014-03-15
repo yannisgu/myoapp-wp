@@ -42,7 +42,7 @@ namespace MyOApp.WindowsStore
         /// <summary>
         /// This can be changed to a strongly typed view model.
         /// </summary>
-        public RootViewModel DefaultViewModel
+        public EventListViewModel DefaultViewModel
         {
             get { return App.RootViewModel; }
         }

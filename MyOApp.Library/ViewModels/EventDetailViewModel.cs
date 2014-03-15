@@ -1,4 +1,7 @@
-﻿using Cirrious.MvvmCross.ViewModels;
+﻿using System.Collections.Generic;
+using System.Windows.Input;
+using Cirrious.MvvmCross.ViewModels;
+using MyOApp.Library.DataLoader;
 using MyOApp.Library.Models;
 using System.Threading.Tasks;
 
@@ -15,29 +18,42 @@ namespace MyOApp.Library.ViewModels
             set { model = value; }
         }
 
-
-        public async Task LoadDataModel()
+        public void LoadDataModel()
         {
             Name = model.Name;
-
-            MapViewModel = new MapOverviewViewModel(Model.Map);
-            await MapViewModel.LoadMaps();
-
         }
 
 
         public async void Init(Event @event)
         {
             Model = @event;
-            await LoadDataModel();
+            LoadDataModel();
         }
 
         public string Name { get; set; }
 
-        public MapOverviewViewModel MapViewModel
+        public MapsListViewModel MapViewModel
         {
             get;
             set;
+        }
+
+        public ICommand OpenMapsCommand
+        {
+            get
+            {
+
+
+                return new MvxCommand(async () =>
+                {
+                    
+                    ShowViewModel<MapsListViewModel>(new MapsListParameters()
+                    {
+                        MapName = Model.Name
+                    
+                    });
+                }); 
+            }
         }
     }
 }

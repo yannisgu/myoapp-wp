@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MyOApp.Library.Models
 {
-    public class MapItemModel
+    public class Map
     {
         [JsonProperty("compname")]
         public string Name

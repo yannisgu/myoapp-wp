@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyOApp.Phone", "MyOApp.Phon
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyOApp.WindowsStore", "MyOApp.WindowsStore\MyOApp.WindowsStore.csproj", "{31C74E7A-919F-41C9-8B81-087938CE36FA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyOApp.Android", "MyOApp.Android\MyOApp.Android.csproj", "{1103C76A-588B-43AB-96D9-8FAE981BF31A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -74,6 +76,18 @@ Global
 		{31C74E7A-919F-41C9-8B81-087938CE36FA}.Release|x86.ActiveCfg = Release|x86
 		{31C74E7A-919F-41C9-8B81-087938CE36FA}.Release|x86.Build.0 = Release|x86
 		{31C74E7A-919F-41C9-8B81-087938CE36FA}.Release|x86.Deploy.0 = Release|x86
+		{1103C76A-588B-43AB-96D9-8FAE981BF31A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1103C76A-588B-43AB-96D9-8FAE981BF31A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1103C76A-588B-43AB-96D9-8FAE981BF31A}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{1103C76A-588B-43AB-96D9-8FAE981BF31A}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{1103C76A-588B-43AB-96D9-8FAE981BF31A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1103C76A-588B-43AB-96D9-8FAE981BF31A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1103C76A-588B-43AB-96D9-8FAE981BF31A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1103C76A-588B-43AB-96D9-8FAE981BF31A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1103C76A-588B-43AB-96D9-8FAE981BF31A}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{1103C76A-588B-43AB-96D9-8FAE981BF31A}.Release|ARM.ActiveCfg = Release|Any CPU
+		{1103C76A-588B-43AB-96D9-8FAE981BF31A}.Release|x64.ActiveCfg = Release|Any CPU
+		{1103C76A-588B-43AB-96D9-8FAE981BF31A}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

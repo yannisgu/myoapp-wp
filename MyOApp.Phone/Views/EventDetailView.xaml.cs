@@ -18,7 +18,11 @@ namespace MyOApp.Phone.Views
             //BuildLocalizedApplicationBar();
         }
 
-        public new EventDetailViewModel ViewModel { get; set; }
+        public new EventDetailViewModel ViewModel 
+        {
+            get { return (EventDetailViewModel)base.ViewModel; }
+            set { base.ViewModel = value; }
+        }
 
         private async void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -32,7 +36,7 @@ namespace MyOApp.Phone.Views
             switch (action)
             {
                 case "Map":
-                        NavigationService.Navigate(new Uri("/MapsPage.xaml", UriKind.Relative));
+                    ViewModel.OpenMapsCommand.Execute(null);
                     break;
                 case "Url":
                     var url = ViewModel.Model.Url;
@@ -46,7 +50,7 @@ namespace MyOApp.Phone.Views
                 case "Timetable":
                     var model = ViewModel.Model;
                     var to = "Bern";
-                   /* if (!string.IsNullOrEmpty(model.EventCenter))
+                    /* if (!string.IsNullOrEmpty(model.EventCenter))
                     {
                         to = "to=" + model.EventCenter;
                     }
@@ -55,8 +59,9 @@ namespace MyOApp.Phone.Views
                         to = "toll=" + model.EventCenterLongitude + ',' + model.EventCenterLatitude;
 
                     }*/
-                    var date = model.Date.Ticks / TimeSpan.TicksPerSecond;
-                    var timetableUrl = "sbbmobileb2c://timetable?" + to + "&time=" + date + "&accessid=dm89518e7a4e0bcf670";
+                    var date = model.Date.Ticks/TimeSpan.TicksPerSecond;
+                    var timetableUrl = "sbbmobileb2c://timetable?" + to + "&time=" + date +
+                                       "&accessid=dm89518e7a4e0bcf670";
                     await Launcher.LaunchUriAsync(new Uri(timetableUrl));
                     break;
                 case "Starlist":

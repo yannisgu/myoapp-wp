@@ -1,4 +1,6 @@
-﻿using MyOApp.Library;
+﻿using System.Collections.ObjectModel;
+using MyOApp.Library;
+using MyOApp.Library.DataLoader;
 using MyOApp.Library.Models;
 using MyOApp.Library.ViewModels;
 using MyOApp.WindowsStore.Common;
@@ -33,7 +35,7 @@ namespace MyOApp.WindowsStore
     sealed partial class App : Application
     {
 
-        public static readonly RootViewModel RootViewModel = new RootViewModel();
+        public static readonly EventListViewModel RootViewModel = new EventListViewModel();
 
         static App()
         {
@@ -116,6 +118,7 @@ namespace MyOApp.WindowsStore
 
 
             var dataAccess = Platform.DataAccess as DataAccess;
+            
 
             if (NetworkInterface.GetIsNetworkAvailable())
             {
@@ -123,7 +126,7 @@ namespace MyOApp.WindowsStore
                 {
                     var localSettings = ApplicationData.Current.LocalSettings;
                     long? last = localSettings.Values["lastUpdate"] as long?;
-                    await (new OeventsLoader()).LoadEvents(last != null ? (long)last : 0);
+                    await (new OeventsLoader()).LoadEvents(last != null ? (long)last : 0, new ObservableCollection<EventItemViewModel>());
                     localSettings.Values["lastUpdate"] = Helper.GetTimestamp(DateTime.Now);
 
 
@@ -133,6 +136,7 @@ namespace MyOApp.WindowsStore
                     Debug.WriteLine(ex.Message);
                 }
             }
+
 
             await App.RootViewModel.LoadItems();
 

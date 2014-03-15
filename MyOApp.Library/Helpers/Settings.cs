@@ -30,11 +30,11 @@ namespace MyOApp.Library.Helpers
 #endregion
 
  
-	public static string LastModification
+	public static long LastModification
         {
             get
             {
-                return AppSettings.GetValueOrDefault("LastModification", SettingsDefault);
+                return AppSettings.GetValueOrDefault("LastModification", 0);
             }
             set
             {

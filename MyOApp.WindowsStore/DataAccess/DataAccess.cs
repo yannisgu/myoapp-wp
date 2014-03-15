@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using MyOApp.Library.Models;
-using MyOApp.Library;
 using Lex.Db;
+using MyOApp.Library;
+using MyOApp.Library.Models;
 
-namespace MyOApp.WindowsStore
+namespace MyOApp.WindowsStore.DataAccess
 {
     public class DataAccess : IDataAccess
     {
