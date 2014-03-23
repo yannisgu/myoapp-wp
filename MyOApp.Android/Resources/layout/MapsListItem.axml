@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:local="http://schemas.android.com/apk/res/MyOApp.Android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    <Mvx.MvxImageView
+        android:layout_width="185dp"
+        android:layout_height="60dp"
+        local:MvxBind="ImageUrl Thumbnail" />
+    <TextView
+        android:layout_height="60dp"
+        android:layout_width="fill_parent"
+        android:layout_marginLeft="60dp"
+        android:paddingLeft="10dp"
+        android:background="#fff"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        local:MvxBind="Text Name" />
+</RelativeLayout>

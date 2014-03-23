@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using System.Threading.Tasks;
 using MyOApp.Library;
 using MyOApp.Library.Models;
@@ -12,22 +11,13 @@ namespace MyOApp.Android
     public class DataAccess : IDataAccess
     {
         SQLiteConnection conn;
-        //DbTable<Event> events;
-
+        
         public DataAccess()
         {
             string folder = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
             conn = new SQLiteConnection(System.IO.Path.Combine(folder, "MyOApp2.db"));
-            //conn.DropTable<Event>();
-            
-            //    await conn.CreateTableAsync<Event>();
+           
             conn.CreateTable<Event>(CreateFlags.AllImplicit | CreateFlags.AutoIncPK);
-            //conn.TableMappings.
-
-            //db.Map<Event>().Automap(i => i.Id, true).WithIndex("Name", i => i.Name);
-
-            //db.Initialize();
-            //events = db.Table<Event>();
         }
 
         public TableQuery<Event> Events { get { return conn.Table<Event>(); } }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -122,11 +123,25 @@ namespace MyOApp.Library.ViewModels
             }
             catch (Exception ex)
             {
-                //Console.Out.Write(ex.Message);
+Debug.WriteLine(ex.StackTrace + "\n" + ex.Message);
+            
             }
             //}
 
 
         }
+        public ICommand ListItemClicked
+        {
+            get
+            {
+                return new MvxCommand<EventItemViewModel>((@event) =>
+                {
+                    this.SelectedItem = @event;
+                    DisplayDetailCommand.Execute(null);
+                });
+            }
+        }
+
+        
     }
 }

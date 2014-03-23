@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows.Input;
+using Cirrious.MvvmCross.Plugins.WebBrowser;
 using Cirrious.MvvmCross.ViewModels;
 using MyOApp.Library.DataLoader;
 using MyOApp.Library.Models;
@@ -11,7 +13,14 @@ namespace MyOApp.Library.ViewModels
     [Magic]
     public class EventDetailViewModel : MvxViewModel
     {
-        Event model;
+        private Event model;
+        private readonly IMvxWebBrowserTask webBrowser;
+
+        public EventDetailViewModel(IMvxWebBrowserTask webBrowser)
+        {
+            this.webBrowser = webBrowser;
+        }
+
         public Event Model
         {
             get { return model; }
@@ -32,28 +41,60 @@ namespace MyOApp.Library.ViewModels
 
         public string Name { get; set; }
 
-        public MapsListViewModel MapViewModel
-        {
-            get;
-            set;
-        }
+        public MapsListViewModel MapViewModel { get; set; }
 
         public ICommand OpenMapsCommand
         {
             get
             {
-
-
                 return new MvxCommand(async () =>
                 {
-                    
+
                     ShowViewModel<MapsListViewModel>(new MapsListParameters()
                     {
-                        MapName = Model.Name
-                    
+                        MapName = Model.Map
+
                     });
-                }); 
+                });
             }
         }
-    }
+
+
+        public ICommand OpenInformations
+        {
+            get { return new MvxCommand(() => webBrowser.ShowWebPage(Model.Url)); }
+        }
+
+        public ICommand OpenTransports
+        {
+            get
+            {
+                return new MvxCommand(() =>
+                {
+                    var to = "";
+                    if (!string.IsNullOrEmpty(model.EventCenter))
+                    {
+                        to = "to=" + model.EventCenter;
+                    }
+                    else if (model.EventCenterLatitude > 0 && model.EventCenterLongitude > 0)
+                    {
+                        to = "toll=" + model.EventCenterLongitude + ',' + model.EventCenterLatitude;
+
+                    }
+                    var date = model.UnixTimestamp / 1000;
+                    var timetableUrl = "sbbmobileb2c://timetable?" + to + "&time=" + date +
+                                       "&accessid=dm89518e7a4e0bcf670";
+
+                    try
+                    {
+                        webBrowser.ShowWebPage(timetableUrl);
+                    }
+                    catch (Exception)
+                    {
+                        // App not installed
+                    }
+                });
+            }
+        }
+}
 }

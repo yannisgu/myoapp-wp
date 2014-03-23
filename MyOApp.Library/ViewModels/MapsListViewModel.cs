@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Windows.Input;
+using Cirrious.MvvmCross.Plugins.WebBrowser;
 using Cirrious.MvvmCross.ViewModels;
 using MyOApp.Library.DataLoader;
 using MyOApp.Library.Models;
@@ -14,14 +16,11 @@ namespace MyOApp.Library.ViewModels
     [Magic]
     public class MapsListViewModel : MvxViewModel
     {
-        public MapsListViewModel()
-        {
-            
-        }
+        private readonly IMvxWebBrowserTask webBrowser;
 
-        public MapsListViewModel(string mapName)
+        public MapsListViewModel(IMvxWebBrowserTask webBrowser)
         {
-            MapName = mapName;
+            this.webBrowser = webBrowser;
         }
 
 
@@ -48,7 +47,7 @@ namespace MyOApp.Library.ViewModels
         {
             get
             {
-                return Maps != null && Maps.Count() == 0;
+                return Maps != null && !Maps.Any();
             }
         }
 
@@ -59,11 +58,16 @@ namespace MyOApp.Library.ViewModels
 
         }
 
+
+        public ICommand OpenMap
+        {
+            get { return new MvxCommand<Map>((map) => webBrowser.ShowWebPage(map.ImageUrl)); }
+        }
+
     }
 
     public class MapsListParameters
     {
-        public IEnumerable<Map> Maps { get; set; }
         public string MapName { get; set; }
     }
 }

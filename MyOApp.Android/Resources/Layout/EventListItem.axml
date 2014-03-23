@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:local="http://schemas.android.com/apk/res/MyOApp.Android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
@@ -13,7 +14,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_column="0"
-                android:id="@+id/checkBoxEventSelected" />
+                android:id="@+id/checkBoxEventSelected"
+                local:MvxBind="Checked Selected; Visible EditMode" />
             <TableLayout
                 android:id="@+id/tableViewSub1"
                 android:layout_width="match_parent"
@@ -25,25 +27,26 @@
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/labelEventName" />
+                        android:id="@+id/labelEventName"
+                        local:MvxBind="Text Name" />
                 </TableRow>
                 <TableRow
                     android:id="@+id/tableRow2">
                     <TextView
-                        android:text="Small Text"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/labelEventRow2" />
+                        android:id="@+id/labelEventRow2"
+                        local:MvxBind="Text MapDate" />
                 </TableRow>
                 <TableRow
                     android:id="@+id/tableRow3">
                     <TextView
-                        android:text="Small Text"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/labelEventRow3" />
+                        android:id="@+id/labelEventRow3"
+                        local:MvxBind="Text RegionOrganiser" />
                 </TableRow>
             </TableLayout>
         </TableRow>

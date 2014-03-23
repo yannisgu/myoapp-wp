@@ -20,6 +20,8 @@ namespace MyOApp.Library.DataLoader
             {
                 var httpClient = new HttpClient();
                 string baseUrl = "http://worldofo.com/m/findomaps.php?type=search&search={0}";
+                //string baseUrl = "https://www.google.com/";
+
                 var request = new HttpRequestMessage(HttpMethod.Get, string.Format(baseUrl, mapName));
                 var response = await httpClient.SendAsync(request);
 

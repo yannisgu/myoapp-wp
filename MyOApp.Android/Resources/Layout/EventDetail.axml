@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:local="http://schemas.android.com/apk/res/MyOApp.Android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -19,7 +20,7 @@
                 android:layout_column="1"
                 android:id="@+id/labelMapLabel" />
             <TextView
-                android:text="Medium Text"
+                local:MvxBind="Text Model.Map"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:layout_column="2"
                 android:id="@+id/labelMap" />
@@ -32,7 +33,7 @@
                 android:layout_column="1"
                 android:id="@+id/labelDateLabel" />
             <TextView
-                android:text="Medium Text"
+                local:MvxBind="Text Model.Date"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:layout_column="2"
                 android:id="@+id/labelDate" />
@@ -45,7 +46,7 @@
                 android:layout_column="1"
                 android:id="@+id/labelLocationLabel" />
             <TextView
-                android:text="Medium Text"
+                local:MvxBind="Text Model.EventCenter"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:layout_column="2"
                 android:id="@+id/labelLocation" />
@@ -58,7 +59,7 @@
                 android:layout_column="1"
                 android:id="@+id/labelOrganisatorLabel" />
             <TextView
-                android:text="Medium Text"
+                local:MvxBind="Text Model.Organiser"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:layout_column="2"
                 android:id="@+id/labelOrganisator" />

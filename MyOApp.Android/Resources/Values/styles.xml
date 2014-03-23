@@ -2,4 +2,13 @@
 <resources>
   <style name="LightTheme" parent="@android:style/Theme.Light.NoTitleBar">
   </style>
+    <style name="DetailLabel" parent="@android:style/TextAppearance.Small">
+      <item name="android:gravity">right</item>
+      <item name="android:layout_marginRight">20dp</item>
+    </style>
+  <style name="TableRowLarge">
+    <item name="android:padding">10dp</item>
+    <item name="android:layout_marginBottom">1px</item>
+    <item name="android:background">#fff</item>
+  </style>
 </resources>

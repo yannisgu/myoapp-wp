@@ -3,6 +3,7 @@ using Cirrious.CrossCore.Platform;
 using Cirrious.MvvmCross.Droid.Platform;
 using Cirrious.MvvmCross.Plugins.Json;
 using Cirrious.MvvmCross.ViewModels;
+using MyOApp.Library;
 
 namespace MyOApp.Android
 {
@@ -14,6 +15,7 @@ namespace MyOApp.Android
 
         protected override IMvxApplication CreateApp()
         {
+            Platform.DataAccess = new DataAccess();
             return new Library.App();
         }
 		
