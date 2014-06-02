@@ -1,5 +1,6 @@
 using System.Collections.Specialized;
 using System.Windows.Input;
+using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 
@@ -7,6 +8,7 @@ namespace MyOApp.Android
 {
     // This class is never actually executed, but when Xamarin linking is enabled it does how to ensure types and properties
     // are preserved in the deployed app
+    [Preserve(AllMembers = true)]
     public class LinkerPleaseInclude
     {
         public void Include(Button button)

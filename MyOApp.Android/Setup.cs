@@ -1,9 +1,11 @@
+using System.Collections.Generic;
+using System.Reflection;
 using Android.Content;
 using Cirrious.CrossCore.Platform;
 using Cirrious.MvvmCross.Droid.Platform;
-using Cirrious.MvvmCross.Plugins.Json;
 using Cirrious.MvvmCross.ViewModels;
 using MyOApp.Library;
+using PluginLoader = Cirrious.MvvmCross.Plugins.Json.PluginLoader;
 
 namespace MyOApp.Android
 {
@@ -18,7 +20,16 @@ namespace MyOApp.Android
             Platform.DataAccess = new DataAccess();
             return new Library.App();
         }
-		
+
+        protected override List<Assembly> ValueConverterAssemblies
+        {
+            get
+            {
+                var toReturn = base.ValueConverterAssemblies;
+                return toReturn;
+            }
+        }
+
         protected override IMvxTrace CreateDebugTrace()
         {
             return new DebugTrace();

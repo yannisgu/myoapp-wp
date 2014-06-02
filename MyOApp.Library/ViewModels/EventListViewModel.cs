@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -14,14 +15,25 @@ namespace MyOApp.Library.ViewModels
     [Magic]
     public class EventListViewModel : MvxViewModel
     {
-        Task<ObservableCollection<EventItemViewModel>> LoadItemsCore()
+        public event EventHandler ItemsLoaded;
+
+        protected virtual void OnItemsLoaded()
+        {
+            EventHandler handler = ItemsLoaded;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
+        }
+
+        private Task<ObservableCollection<EventItemViewModel>> LoadItemsCore()
         {
             return Task.Run(async () =>
             {
                 var events = await Platform.DataAccess.GetEvents();
                 var models = from i in events
-                             orderby i.Date
-                             select new EventItemViewModel(i);
+                    orderby i.Date
+                    select new EventItemViewModel(i);
                 return new ObservableCollection<EventItemViewModel>(models);
             });
         }
@@ -45,42 +57,14 @@ namespace MyOApp.Library.ViewModels
 
 
         public EventItemViewModel SelectedItem { get; set; }
-        /*
-        async void UpdateDetails()
-        {
-            if (selectedItem == null)
-                DetailItem = null;
-            else if (DetailItem == null || DetailItem.Model.Id != selectedItem.Id)
-            {
-                IsLoading = true;
-                try
-                {
-                    var item = await LoadDetails(selectedItem.Id);
-                    DetailItem = new EventDetailViewModel(item);
-                }
-                catch 
-                {
-                }
-                finally
-                {
-                    IsLoading = false;
-                }
-            }
-        }*/
 
-       /* Task<Event> LoadDetails(int id)
-        {
-            return Platform.DataAccess.GetEvent(id);
-        }*/
-
-        //public EventDetailViewModel DetailItem { get;  set; }
 
         public ICommand DisplayDetailCommand
         {
             get { return new MvxCommand(() => ShowViewModel<EventDetailViewModel>(SelectedItem.Event)); }
         }
 
-       
+
         private bool overviewEdit;
 
         public bool OverviewEdit
@@ -101,35 +85,45 @@ namespace MyOApp.Library.ViewModels
 
             }
 
-            get
-            {
-                return overviewEdit;
-            }
+            get { return overviewEdit; }
         }
 
         public async Task Init()
         {
-
+            var itemsLoadedFired = false;
+            ObservableCollection<EventItemViewModel> items;
             await LoadItems();
+            if (Items.Any())
+            {
+                itemsLoadedFired = true;
+                OnItemsLoaded();
+                items = Items;
+            }
+            else
+            {
+                items = new ObservableCollection<EventItemViewModel>();
+            }
 
-            //if (NetworkInterface.NetworkInterfaceType != Microsoft.Phone.Net.NetworkInformation.NetworkInterfaceType.None)
-            //{
             try
             {
-                var last =  Settings.LastModification;
-                //var task = (new OeventsLoader()).LoadEvents(last != null ? (long)last : 0, RootViewModel.Items);
-                await (new OeventsLoader()).LoadEvents(last, Items);
+                var last = Settings.LastModification;
+                await (new OeventsLoader()).LoadEvents(last, items);
+                if (items != Items)
+                {
+                    Items = items;
+                }
                 Settings.LastModification = Helper.GetTimestamp(DateTime.Now);
             }
             catch (Exception ex)
             {
-Debug.WriteLine(ex.StackTrace + "\n" + ex.Message);
-            
+                Debug.WriteLine(ex.StackTrace + "\n" + ex.Message);
             }
-            //}
-
-
+            if (!itemsLoadedFired)
+            {
+                OnItemsLoaded();
+            }
         }
+
         public ICommand ListItemClicked
         {
             get

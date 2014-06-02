@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SQLite;
 
 namespace MyOApp.Library.Models
 {
@@ -16,7 +17,8 @@ namespace MyOApp.Library.Models
             set;
         }
 
-       [JsonPropertyAttribute("id")]
+        [JsonPropertyAttribute("id")]
+        [Column("source_id")]
         public string SourceId { get; set; }
 
         public string Name

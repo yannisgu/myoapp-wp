@@ -50,6 +50,7 @@ namespace MyOApp.Library.DataLoader
                     ev.Selected = true;
                     await dataAcces.UpdateEvent(ev);
                     var previous = viewModels.FirstOrDefault(m => m.Date > ev.Date);
+                    
                     var viewModel = new EventItemViewModel(ev);
                     if (previous == null)
                     {

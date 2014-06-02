@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Android.Graphics;
+using Android.Provider;
+using Java.IO;
 using MyOApp.Library;
 using MyOApp.Library.Models;
 using SQLite;
@@ -15,8 +19,20 @@ namespace MyOApp.Android
         public DataAccess()
         {
             string folder = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            conn = new SQLiteConnection(System.IO.Path.Combine(folder, "MyOApp2.db"));
-           
+            var folderOld = System.IO.Path.Combine(folder, "../databases");
+            if ((new DirectoryInfo(folderOld).Exists))
+            {
+                var  conn2 = new SQLiteConnection(System.IO.Path.Combine(folderOld, "_alloy_"));
+                conn2.Execute("ALTER TABLE event RENAME TO old_event;");
+                conn2.CreateTable<Event>(CreateFlags.AllImplicit | CreateFlags.AutoIncPK);
+                conn2.Execute("INSERT INTO event(source_id, selected) SELECT source_id, enabled FROM old_event;");
+                conn2.Close();
+                conn2.Dispose();
+                System.IO.File.Copy(System.IO.Path.Combine(folderOld, "_alloy_"),System.IO.Path.Combine(folder, "MyOApp.db"));
+
+            }
+
+            conn = new SQLiteConnection(System.IO.Path.Combine(folder, "MyOApp.db"));
             conn.CreateTable<Event>(CreateFlags.AllImplicit | CreateFlags.AutoIncPK);
         }
 

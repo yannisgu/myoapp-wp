@@ -10,12 +10,13 @@ using Android.Provider;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using Cirrious.MvvmCross.Binding.Droid.Views;
 using Cirrious.MvvmCross.Droid.Views;
 using MyOApp.Library.ViewModels;
 
 namespace MyOApp.Android.Views
 {
-    [Activity(Label = "MyOApp.Android", MainLauncher = true, Icon = "@drawable/icon")]
+    [Activity(Label = "MyOApp", MainLauncher = true, Icon = "@drawable/icon")]
     public    class EventListView : MvxActivity
     {
         public new EventListViewModel ViewModel
@@ -26,7 +27,19 @@ namespace MyOApp.Android.Views
 
         protected override void OnViewModelSet()
         {
+            ViewModel.ItemsLoaded += ViewModel_ItemsLoaded;
             SetContentView(Resource.Layout.EventListView);
+        }
+
+        void ViewModel_ItemsLoaded(object sender, EventArgs e)
+        {
+            var index = ViewModel.Items.IndexOf(ViewModel.Items.FirstOrDefault(d => d.Date > DateTime.Now.AddDays(-1)));
+            if (index >= 0)
+            {
+                var listView = FindViewById<MvxListView>(Resource.Id.listView);
+
+                listView.SetSelection(index);
+            }
         }
 
 
@@ -36,8 +49,9 @@ namespace MyOApp.Android.Views
 
             switch (item.ItemId)
             {
-                case 0:
+                case Resource.Id.edit:
                     ViewModel.OverviewEdit = !ViewModel.OverviewEdit;
+                    InvalidateOptionsMenu();
                     returnValue = true;
                     break;
             }
@@ -46,19 +60,17 @@ namespace MyOApp.Android.Views
             return returnValue;
         }
 
-
+        public override bool OnCreateOptionsMenu(IMenu menu)
+        {
+            MenuInflater.Inflate(Resource.Menu.eventListMenu,menu);
+            return true;
+            
+        }
 
         public override bool OnPrepareOptionsMenu(IMenu menu)
         {
-            menu.Clear();
-            if (ViewModel.OverviewEdit)
-            {
-                menu.Add(0, 0, 0, "Bearbeiten beenden");
-            }
-            else
-            {
-                menu.Add(0, 0, 0, "Bearbeiten");
-            }
+            var item = menu.FindItem(Resource.Id.edit);
+            item.SetTitle(ViewModel.OverviewEdit ? "Bearbeiten beenden" : "Bearbeiten");
             return true;
         }
     }

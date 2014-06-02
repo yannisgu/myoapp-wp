@@ -62,7 +62,16 @@ namespace MyOApp.Library.ViewModels
 
         public ICommand OpenInformations
         {
-            get { return new MvxCommand(() => webBrowser.ShowWebPage(Model.Url)); }
+            get
+            {
+                return new MvxCommand(() =>
+                {
+                    if (Model.Url != null && Uri.IsWellFormedUriString(Model.Url, UriKind.Absolute))
+                    {
+                        webBrowser.ShowWebPage(Model.Url);
+                    }
+                });
+            }
         }
 
         public ICommand OpenTransports

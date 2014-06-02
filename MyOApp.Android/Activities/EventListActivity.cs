@@ -7,6 +7,8 @@ using Android.Widget;
 
 namespace MyOApp.Android.Activities
 {
+    
+
     [Activity(Label = "MyOApp.Android", MainLauncher = true, Icon = "@drawable/icon")]
     public class EventListActivity : Activity
     {

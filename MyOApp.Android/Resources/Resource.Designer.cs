@@ -92,8 +92,11 @@ namespace MyOApp.Android
 			// aapt resource value: 0x7f05000f
 			public const int checkBoxEventSelected = 2131034127;
 			
-			// aapt resource value: 0x7f050016
-			public const int eventsListView = 2131034134;
+			// aapt resource value: 0x7f050018
+			public const int edit = 2131034136;
+			
+			// aapt resource value: 0x7f050017
+			public const int eventsListView = 2131034135;
 			
 			// aapt resource value: 0x7f050006
 			public const int labelDate = 2131034118;
@@ -127,6 +130,9 @@ namespace MyOApp.Android
 			
 			// aapt resource value: 0x7f05000b
 			public const int labelOrganisatorLabel = 2131034123;
+			
+			// aapt resource value: 0x7f050016
+			public const int listView = 2131034134;
 			
 			// aapt resource value: 0x7f05000d
 			public const int tableLayout1 = 2131034125;
@@ -198,6 +204,22 @@ namespace MyOApp.Android
 			}
 			
 			private Layout()
+			{
+			}
+		}
+		
+		public partial class Menu
+		{
+			
+			// aapt resource value: 0x7f070000
+			public const int eventListMenu = 2131165184;
+			
+			static Menu()
+			{
+				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
+			}
+			
+			private Menu()
 			{
 			}
 		}
